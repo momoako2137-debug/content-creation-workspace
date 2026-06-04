@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/Users/Owner/Documents/claude_workspace/.claude/ohayo_hook.py",
+            "timeout": 15,
+            "statusMessage": "おはようフック実行中..."
+          },
+          {
+            "type": "command",
+            "command": "python C:/Users/Owner/Documents/claude_workspace/.claude/save_hook.py",
+            "timeout": 15,
+            "statusMessage": "保存フック実行中..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/Users/Owner/Documents/claude_workspace/.claude/protect_hook.py",
+            "timeout": 10,
+            "statusMessage": "機密ファイルの保護チェック中..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/Users/Owner/Documents/claude_workspace/.claude/test_runner.py",
+            "timeout": 60,
+            "asyncRewake": true,
+            "statusMessage": "テスト自動実行中..."
+          }
+        ]
+      }
+    ]
+  }
+}
