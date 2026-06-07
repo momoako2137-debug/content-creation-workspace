@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}クライアント一覧 | 個別相談カルテ{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-rose-800">クライアント一覧</h1>
+  <button onclick="openAddModal()"
+    class="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow">
+    ＋ 新規クライアント追加
+  </button>
+</div>
+
+{% if clients %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {% for client in clients %}
+  <a href="/client/{{ client.id }}"
+    class="bg-orange-50 border border-orange-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-pink-300 transition block">
+    <div class="flex items-start justify-between mb-2">
+      <h2 class="text-lg font-bold text-rose-800">{{ client.name or '（名前なし）' }}</h2>
+      {% if client.route %}
+      <span class="text-xs bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full">{{ client.route }}</span>
+      {% endif %}
+    </div>
+    {% if client.issue %}
+    <p class="text-sm text-stone-600 mb-3 line-clamp-2">{{ client.issue }}</p>
+    {% endif %}
+    <div class="text-xs text-stone-500 space-y-1">
+      {% if client.child_grade %}
+      <div>👦 {{ client.child_grade }}</div>
+      {% endif %}
+      {% if client.first_date %}
+      <div>📅 初回：{{ client.first_date }}</div>
+      {% endif %}
+      {% if client.next_date %}
+      <div class="text-pink-600 font-medium">🔔 次回：{{ client.next_date }}</div>
+      {% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-16 text-stone-400">
+  <div class="text-5xl mb-4">🌸</div>
+  <p class="text-lg">まだクライアントがいません</p>
+  <p class="text-sm mt-2">「新規クライアント追加」から始めましょう</p>
+</div>
+{% endif %}
+
+<!-- 新規クライアント追加モーダル -->
+<div id="addModal" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+    <h2 class="text-xl font-bold text-rose-800 mb-5">新規クライアント追加</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">クライアント名（仮名・イニシャル）<span class="text-red-400">*</span></label>
+        <input type="text" id="new-name" placeholder="例：R.K.さん"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">初回相談日</label>
+        <input type="date" id="new-first-date"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">主訴・相談内容</label>
+        <textarea id="new-issue" rows="2" placeholder="例：中3男子の不登校対応"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400 resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">経路</label>
+        <select id="new-route"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400">
+          <option>Threads</option>
+          <option>Note</option>
+          <option>スタンドエフエム</option>
+          <option>紹介</option>
+          <option>セルフケア講座受講者</option>
+          <option>OKサロン</option>
+          <option selected>その他</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">子どもの学年</label>
+        <input type="text" id="new-child-grade" placeholder="例：中3・大1・小5"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400">
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeAddModal()"
+        class="flex-1 border border-stone-200 text-stone-500 py-2 rounded-xl text-sm hover:bg-stone-50 transition">
+        キャンセル
+      </button>
+      <button onclick="submitAddClient()"
+        class="flex-1 bg-pink-400 hover:bg-pink-500 text-white py-2 rounded-xl text-sm font-medium transition">
+        追加する
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openAddModal() {
+  document.getElementById('addModal').classList.remove('hidden');
+}
+function closeAddModal() {
+  document.getElementById('addModal').classList.add('hidden');
+}
+
+async function submitAddClient() {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) {
+    showToast('クライアント名を入力してください', 'error');
+    return;
+  }
+
+  const data = {
+    name: name,
+    first_date: document.getElementById('new-first-date').value,
+    issue: document.getElementById('new-issue').value,
+    route: document.getElementById('new-route').value,
+    child_grade: document.getElementById('new-child-grade').value,
+  };
+
+  try {
+    const res = await fetch('/api/add_client', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (result.success) {
+      showToast('クライアントを追加しました');
+      setTimeout(() => location.href = `/client/${result.client_id}`, 1000);
+    } else {
+      showToast(result.error || '追加に失敗しました', 'error');
+    }
+  } catch (e) {
+    showToast('エラーが発生しました', 'error');
+  }
+}
+</script>
+{% endblock %}

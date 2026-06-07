@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}新規セッション記録 | {{ client.name }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <a href="/client/{{ client.id }}" class="text-sm text-pink-500 hover:text-pink-700">← {{ client.name }} に戻る</a>
+</div>
+
+<h1 class="text-xl font-bold text-rose-800 mb-6">
+  {{ client.name }} — 第{{ session_count }}回 セッション記録
+</h1>
+
+<!-- セッション基本情報 -->
+<div class="bg-white border border-stone-200 rounded-2xl p-5 mb-5 shadow-sm">
+  <div class="flex flex-col sm:flex-row gap-4">
+    <div class="flex-1">
+      <label class="block text-sm font-medium text-stone-600 mb-1">セッション日</label>
+      <input type="date" id="session-date"
+        class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-400">
+    </div>
+    <div class="w-24">
+      <label class="block text-sm font-medium text-stone-600 mb-1">回数</label>
+      <input type="number" id="session-count" value="{{ session_count }}" min="1" readonly
+        class="w-full border border-stone-100 rounded-lg px-3 py-2 text-sm bg-stone-50 text-stone-400">
+    </div>
+  </div>
+</div>
+
+<!-- セッション分析まとめて貼り付け -->
+<div class="bg-white border border-stone-200 rounded-2xl p-5 mb-5 shadow-sm">
+  <label class="block text-sm font-bold text-rose-700 mb-2">
+    📋 セッション分析をまとめて貼り付け
+  </label>
+  <p class="text-xs text-stone-400 mb-3">Claudeが出した分析結果をそのままコピペしてください</p>
+  <textarea id="session-analysis" rows="12"
+    placeholder="ここにセッション分析をまとめて貼り付けてください..."
+    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 resize-y"></textarea>
+  <p class="text-xs text-stone-400 mt-2">Claudeの分析結果をそのままコピーして貼り付けてください</p>
+</div>
+
+<!-- セッション間メッセージ記録 -->
+<div class="bg-white border border-stone-200 rounded-2xl p-5 mb-6 shadow-sm">
+  <label class="block text-sm font-bold text-rose-700 mb-2">
+    💬 セッション間メッセージ記録（任意）
+  </label>
+  <p class="text-xs text-stone-400 mb-3">セッション後のやり取りをここに貼り付けてください</p>
+  <textarea id="session-messages" rows="5"
+    placeholder="日付とメッセージ内容をここに貼り付けてください（任意）..."
+    class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 resize-y"></textarea>
+</div>
+
+<!-- 保存ボタン -->
+<button id="save-btn" onclick="saveSession()"
+  class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg">
+  💾 Notionに保存する
+</button>
+
+<!-- hidden -->
+<input type="hidden" id="client-id" value="{{ client.id }}">
+<input type="hidden" id="session-db-id" value="{{ session_db_id or '' }}">
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 今日の日付をデフォルトに設定
+document.getElementById('session-date').valueAsDate = new Date();
+
+async function saveSession() {
+  const sessionDate = document.getElementById('session-date').value;
+  const sessionCount = parseInt(document.getElementById('session-count').value);
+  const sessionDbId = document.getElementById('session-db-id').value;
+  const analysis = document.getElementById('session-analysis').value.trim();
+  const messages = document.getElementById('session-messages').value.trim();
+
+  if (!sessionDate) {
+    showToast('セッション日を入力してください', 'error');
+    return;
+  }
+  if (!analysis) {
+    showToast('セッション分析を貼り付けてください', 'error');
+    return;
+  }
+  if (!sessionDbId) {
+    showToast('セッションDBが見つかりません', 'error');
+    return;
+  }
+
+  // ボタンを保存中に変更
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 保存中...';
+  btn.className = 'w-full bg-stone-400 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg cursor-not-allowed';
+
+  try {
+    const res = await fetch('/api/save_session', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        session_db_id: sessionDbId,
+        session_count: sessionCount,
+        session_date: sessionDate,
+        analysis: analysis,
+        messages: messages,
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      btn.textContent = '✅ 保存しました！';
+      btn.className = 'w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg';
+      showToast('Notionに保存しました！');
+      const clientId = document.getElementById('client-id').value;
+      setTimeout(() => location.href = `/client/${clientId}`, 1500);
+    } else {
+      showToast('保存失敗: ' + (result.error || '不明なエラー'), 'error');
+      btn.disabled = false;
+      btn.textContent = '💾 Notionに保存する';
+      btn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg';
+    }
+  } catch (e) {
+    showToast('エラー: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = '💾 Notionに保存する';
+    btn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-lg transition shadow-lg';
+  }
+}
+</script>
+{% endblock %}

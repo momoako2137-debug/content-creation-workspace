@@ -1,0 +1,49 @@
+/* カスタムCSS */
+
+/* フォームのフォーカス時のアニメーション */
+input:focus, textarea:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(244, 143, 177, 0.2);
+  transition: all 0.2s ease;
+}
+
+/* ローディングスピナー */
+.animate-spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* カードホバー */
+a.block:hover {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}
+
+/* テキストの折り返し制限 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ボタン押下時 */
+button:active {
+  transform: scale(0.98);
+}
+
+/* スクロールバーをシンプルに */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fce4ec;
+}
+::-webkit-scrollbar-thumb {
+  background: #f48fb1;
+  border-radius: 3px;
+}

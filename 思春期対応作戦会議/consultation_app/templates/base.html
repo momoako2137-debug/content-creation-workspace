@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}個別相談カルテ{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#F8BBD0',
+            secondary: '#FFE0B2',
+            accent: '#F48FB1',
+            dark: '#5D4037',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-rose-50 text-stone-700 min-h-screen">
+
+  <!-- ヘッダー -->
+  <header class="bg-pink-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 text-rose-800 font-bold text-lg hover:opacity-80">
+        🌸 <span>個別相談カルテ</span>
+      </a>
+      <span class="text-sm text-rose-600">モモさんの相談記録</span>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- トースト通知 -->
+  <div id="toast" class="fixed bottom-6 right-6 hidden z-50">
+    <div id="toast-content" class="px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium"></div>
+  </div>
+
+  <script>
+    // トースト通知
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const content = document.getElementById('toast-content');
+      content.textContent = message;
+      content.className = `px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
