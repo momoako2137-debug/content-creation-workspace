@@ -1,10 +1,11 @@
 """
-不登校支援LP 固定ページ作成スクリプト
+ストアカ講座ページ連動LP 固定ページ作成スクリプト
+（ストアカ講座ページから来た人向けの動画ページ）
 
 使い方:
-  python wp_futouko_lp.py          # 新規作成（下書き）
-  python wp_futouko_lp.py publish  # 公開で作成
-  python wp_futouko_lp.py update   # 既存ページを上書き更新
+  python wp_stoaka_lp.py          # 新規作成（下書き）
+  python wp_stoaka_lp.py publish  # 公開で作成
+  python wp_stoaka_lp.py update   # 既存ページを上書き更新
 
 ※ wp_config.py は 02_講座/self_care/ にあるものを参照します
 """
@@ -15,8 +16,8 @@ from requests.auth import HTTPBasicAuth
 sys.path.append('../self_care')
 from wp_config import WP_URL, WP_USER, WP_APP_PASSWORD
 
-# 既存ページID（更新モード用。作成後に発行されたIDをここに記入する）
-EXISTING_PAGE_ID = 1506
+# 既存ページID（更新モード用）
+EXISTING_PAGE_ID = 1528
 
 # 動画URL
 VIDEO_URL = 'https://youtu.be/UJP_B0sxpxc'
@@ -30,7 +31,6 @@ KOJIN_DAIGAKU_URL = 'https://www.street-academy.com/myclass/216641?trigger=searc
 # ── Gutenberg ブロック記法 ─────────────────────────────────────────
 
 def h1(text):
-    """見出し（H1・キャッチコピー用）"""
     return (
         '<!-- wp:heading {"level":1,"textAlign":"center","className":"wp-block-heading"} -->\n'
         f'<h1 class="wp-block-heading has-text-align-center">{text}</h1>\n'
@@ -39,7 +39,6 @@ def h1(text):
 
 
 def h2(text):
-    """見出し（H2）"""
     return (
         '<!-- wp:heading {"className":"wp-block-heading"} -->\n'
         f'<h2 class="wp-block-heading">{text}</h2>\n'
@@ -48,7 +47,6 @@ def h2(text):
 
 
 def h3(text):
-    """見出し（H3）"""
     return (
         '<!-- wp:heading {"level":3,"className":"wp-block-heading"} -->\n'
         f'<h3 class="wp-block-heading">{text}</h3>\n'
@@ -57,7 +55,6 @@ def h3(text):
 
 
 def p(html, align=''):
-    """段落"""
     if align:
         return (
             f'<!-- wp:paragraph {{"textAlign":"{align}"}} -->\n'
@@ -68,7 +65,6 @@ def p(html, align=''):
 
 
 def sep():
-    """区切り線"""
     return (
         '<!-- wp:separator -->\n'
         '<hr class="wp-block-separator has-alpha-channel-opacity"/>\n'
@@ -76,18 +72,32 @@ def sep():
     )
 
 
-def ul(items):
-    """箇条書きリスト"""
-    li_html = '\n'.join([f'<li>{item}</li>' for item in items])
+def video_embed(url):
     return (
-        '<!-- wp:list -->\n'
-        f'<ul class="wp-block-list">{li_html}</ul>\n'
-        '<!-- /wp:list -->'
+        f'<!-- wp:embed {{"url":"{url}","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"}} -->\n'
+        f'<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio">'
+        f'<div class="wp-block-embed__wrapper">\n{url}\n</div></figure>\n'
+        '<!-- /wp:embed -->'
+    )
+
+
+def button(label, href):
+    return (
+        '<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->\n'
+        '<div class="wp-block-buttons">'
+        '<!-- wp:button {"style":{"border":{"radius":"4px"},'
+        '"color":{"background":"#FABE57","text":"#ffffff"}}} -->\n'
+        '<div class="wp-block-button">'
+        f'<a class="wp-block-button__link wp-element-button" '
+        f'href="{href}" target="_blank" rel="noreferrer noopener" '
+        'style="border-radius:4px;background-color:#FABE57;color:#ffffff">'
+        f'{label}</a></div>\n'
+        '<!-- /wp:button --></div>\n'
+        '<!-- /wp:buttons -->'
     )
 
 
 def group_pink(inner_blocks):
-    """ピンク背景のグループブロック（#fdf6f7）"""
     style = (
         'background-color:#fdf6f7;border-radius:8px;'
         'padding-top:28px;padding-right:32px;padding-bottom:28px;padding-left:32px'
@@ -104,7 +114,6 @@ def group_pink(inner_blocks):
 
 
 def group_light(inner_blocks):
-    """薄いグレー背景のグループブロック"""
     style = (
         'background-color:#f9f9f9;border-radius:8px;'
         'padding-top:28px;padding-right:32px;padding-bottom:28px;padding-left:32px'
@@ -120,33 +129,6 @@ def group_light(inner_blocks):
     )
 
 
-def video_embed(url):
-    """YouTube動画埋め込み"""
-    return (
-        f'<!-- wp:embed {{"url":"{url}","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-16-9 wp-has-aspect-ratio"}} -->\n'
-        f'<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio">'
-        f'<div class="wp-block-embed__wrapper">\n{url}\n</div></figure>\n'
-        '<!-- /wp:embed -->'
-    )
-
-
-def button(label, href):
-    """CTAボタン（色：#FABE57）"""
-    return (
-        '<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->\n'
-        '<div class="wp-block-buttons">'
-        '<!-- wp:button {"style":{"border":{"radius":"4px"},'
-        '"color":{"background":"#FABE57","text":"#ffffff"}}} -->\n'
-        '<div class="wp-block-button">'
-        f'<a class="wp-block-button__link wp-element-button" '
-        f'href="{href}" target="_blank" rel="noreferrer noopener" '
-        'style="border-radius:4px;background-color:#FABE57;color:#ffffff">'
-        f'{label}</a></div>\n'
-        '<!-- /wp:button --></div>\n'
-        '<!-- /wp:buttons -->'
-    )
-
-
 # ── コンテンツ本文 ────────────────────────────────────────────────
 
 def build_content():
@@ -155,19 +137,6 @@ def build_content():
         # ── キャッチコピー ──
         h1('子どもの回復力を、親が引き出す。'),
         p('「見守るしかない」は、もう終わりにしよう。<br>子どもの回復力を引き出す、親の関わり方があります。', 'center'),
-
-        sep(),
-
-        # ── 共感リスト ──
-        h2('こんな状況ではありませんか？'),
-        ul([
-            '子どもが部屋から出てこない',
-            '子どもが荒れる、暴言を吐く',
-            '子どもが落ち込んでいて、元気がない',
-            '学校に行き渋るようになった',
-            '「ほっといて」と言われて、どう関わればいいかわからない',
-        ]),
-        p('一つでも当てはまるなら、この動画があなたのお役に立てるかもしれません。'),
 
         sep(),
 
@@ -231,20 +200,18 @@ def build_content():
 # ── API操作 ──────────────────────────────────────────────────────
 
 def create_page(title, content, status='draft'):
-    """固定ページを新規作成"""
     url = f'{WP_URL}/wp-json/wp/v2/pages'
     auth = HTTPBasicAuth(WP_USER, WP_APP_PASSWORD)
     response = requests.post(url, json={
         'title': title,
         'content': content,
         'status': status,
-        'slug': 'futouko-support',
+        'slug': 'stoaka-lp',
     }, auth=auth)
     _print_result(response, '作成')
 
 
 def update_page(page_id, title, content, status='draft'):
-    """既存固定ページを上書き更新"""
     url = f'{WP_URL}/wp-json/wp/v2/pages/{page_id}'
     auth = HTTPBasicAuth(WP_USER, WP_APP_PASSWORD)
     response = requests.post(url, json={
