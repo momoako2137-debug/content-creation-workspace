@@ -4,7 +4,7 @@
 
 import requests
 import json
-from config import NOTION_API_KEY, NOTION_CLIENT_DB_ID, NOTION_VERSION
+from config import NOTION_API_KEY, NOTION_CLIENT_DB_ID, NOTION_COMM_DB_ID, NOTION_VERSION
 
 
 def _headers():
@@ -33,6 +33,7 @@ def get_clients():
         client = {
             "id": page["id"],
             "url": page.get("url", ""),
+            "client_number": _get_formula_or_text(props.get("顧客番号", {})),
             "name": _get_title(props.get("クライアント名（仮名・イニシャル）", {})),
             "first_date": _get_date(props.get("初回相談日", {})),
             "next_date": _get_date(props.get("次回フォローアップ日", {})),
@@ -56,6 +57,7 @@ def get_client(client_id):
     return {
         "id": page["id"],
         "url": page.get("url", ""),
+        "client_number": _get_formula_or_text(props.get("顧客番号", {})),
         "name": _get_title(props.get("クライアント名（仮名・イニシャル）", {})),
         "first_date": _get_date(props.get("初回相談日", {})),
         "next_date": _get_date(props.get("次回フォローアップ日", {})),
@@ -165,6 +167,110 @@ def get_sessions(client_page_id):
         }
         sessions.append(session)
     return sessions, session_db_id
+
+
+def get_communications(client_page_id):
+    """指定クライアントのコミュニケーション記録を取得（全件取得→Python側で照合）"""
+    target_id = client_page_id.replace("-", "")
+
+    url = f"https://api.notion.com/v1/databases/{NOTION_COMM_DB_ID}/query"
+    payload = {
+        "sorts": [{"property": "日付", "direction": "descending"}],
+        "page_size": 100
+    }
+    response = requests.post(url, headers=_headers(), json=payload)
+    if response.status_code != 200:
+        print(f"[コミュニケーション取得エラー] status={response.status_code} body={response.text[:300]}")
+        return []
+
+    results = response.json().get("results", [])
+    comms = []
+    for page in results:
+        props = page.get("properties", {})
+        # リレーションプロパティ名を動的に探す（日本語名が異なる場合に対応）
+        relation_prop = None
+        for key, val in props.items():
+            if val.get("type") == "relation":
+                relation_prop = val
+                break
+        if relation_prop is None:
+            continue
+        relation_items = relation_prop.get("relation", [])
+        related_ids = [r.get("id", "").replace("-", "") for r in relation_items]
+        if target_id not in related_ids:
+            continue
+        comms.append({
+            "id": page["id"],
+            "url": page.get("url", ""),
+            "title": _get_title(props.get("タイトル", {})),
+            "date": _get_date(props.get("日付", {})),
+            "route": _get_select(props.get("経路", {})),
+            "direction": _get_select(props.get("方向", {})),
+            "content": _get_text(props.get("内容", {})),
+            "status": _get_select(props.get("対応状況", {})),
+            "memo": _get_text(props.get("メモ", {})),
+        })
+    return comms
+
+
+def debug_communications_raw(client_page_id):
+    """デバッグ用：コミュニケーションDBの生データを返す"""
+    url = f"https://api.notion.com/v1/databases/{NOTION_COMM_DB_ID}/query"
+    payload = {"page_size": 10}
+    response = requests.post(url, headers=_headers(), json=payload)
+    if response.status_code != 200:
+        return {"error": response.status_code, "body": response.text}
+    data = response.json()
+    # 最初の1件のプロパティ構造だけ返す
+    results = data.get("results", [])
+    if not results:
+        return {"message": "DBにレコードが0件です", "total": 0}
+    first = results[0]
+    props_summary = {k: v.get("type") for k, v in first.get("properties", {}).items()}
+    # リレーション値も確認
+    for k, v in first.get("properties", {}).items():
+        if v.get("type") == "relation":
+            props_summary[f"{k}(relation_ids)"] = [r.get("id") for r in v.get("relation", [])]
+    # 実際の値も確認
+    first_props = first.get("properties", {})
+    content_val = "".join(t.get("plain_text", "") for t in first_props.get("内容", {}).get("rich_text", []))
+    memo_val = "".join(t.get("plain_text", "") for t in first_props.get("メモ", {}).get("rich_text", []))
+    return {
+        "total_records": len(results),
+        "client_page_id": client_page_id,
+        "client_id_normalized": client_page_id.replace("-", ""),
+        "first_record_props": props_summary,
+        "内容_value": content_val,
+        "メモ_value": memo_val,
+    }
+
+
+def save_communication(client_page_id, title, date, route, direction, status, content, memo=""):
+    """コミュニケーション記録をNotionに保存"""
+    # くみさんのページURLを組み立て（ダッシュなし形式で渡す）
+    normalized = client_page_id.replace("-", "")
+    client_url = f"https://app.notion.com/p/{normalized}"
+
+    url = "https://api.notion.com/v1/pages"
+    payload = {
+        "parent": {"database_id": NOTION_COMM_DB_ID},
+        "properties": {
+            "タイトル": {"title": [{"text": {"content": title}}]},
+            "日付": {"date": {"start": date}},
+            "経路": {"select": {"name": route}},
+            "方向": {"select": {"name": direction}},
+            "対応状況": {"select": {"name": status}},
+            "内容": {"rich_text": [{"text": {"content": content}}]},
+            "メモ": {"rich_text": [{"text": {"content": memo}}]},
+            "クライアント": {"relation": [{"id": client_page_id}]},
+        }
+    }
+    response = requests.post(url, headers=_headers(), json=payload)
+    if response.status_code == 200:
+        return True, response.json().get("url", "")
+    else:
+        print(f"[コミュニケーション保存エラー] {response.status_code}: {response.text[:300]}")
+        return False, response.text
 
 
 def save_session(session_db_id, session_count, session_date, analysis, messages):
@@ -410,3 +516,26 @@ def _get_select(prop):
 
 def _get_number(prop):
     return prop.get("number", 0) or 0
+
+
+def _get_formula_or_text(prop):
+    """unique_id・フォーミュラ・テキスト・数値いずれの型でも顧客番号を取得"""
+    if not prop:
+        return ""
+    prop_type = prop.get("type", "")
+    if prop_type == "unique_id":
+        uid = prop.get("unique_id", {})
+        prefix = uid.get("prefix") or ""
+        number = uid.get("number")
+        if number is None:
+            return ""
+        return f"{prefix}-{number}" if prefix else str(number)
+    if prop_type == "formula":
+        formula = prop.get("formula", {})
+        return str(formula.get("string") or formula.get("number") or "")
+    if prop_type == "rich_text":
+        return _get_text(prop)
+    if prop_type == "number":
+        val = prop.get("number")
+        return f"CL-{val}" if val is not None else ""
+    return ""

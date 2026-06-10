@@ -20,8 +20,8 @@ UUID_RE = re.compile(
     re.IGNORECASE
 )
 from notion_handler import (
-    get_clients, get_client, get_sessions,
-    save_session, add_client
+    get_clients, get_client, get_sessions, get_communications,
+    save_session, save_communication, add_client, debug_communications_raw
 )
 from ai_analyzer import analyze_section_2a, analyze_section_2b
 from config import APP_HOST, APP_PORT
@@ -51,11 +51,22 @@ def client_detail(client_id):
         sessions, session_db_id = result
     else:
         sessions, session_db_id = [], None
+    communications = get_communications(client_id)
+
+    # セッション記録とコミュニケーション記録を日付順に混ぜる
+    timeline = []
+    for s in sessions:
+        timeline.append({"type": "session", "date": s.get("date") or "", "data": s})
+    for c in communications:
+        timeline.append({"type": "comm", "date": c.get("date") or "", "data": c})
+    timeline.sort(key=lambda x: x["date"] or "", reverse=True)
+
     return render_template(
         "client.html",
         client=client,
-        sessions=sessions,
-        session_db_id=session_db_id
+        timeline=timeline,
+        session_db_id=session_db_id,
+        communications=communications
     )
 
 
@@ -131,6 +142,53 @@ def api_save_session():
         return jsonify({"success": True, "url": result})
     else:
         return jsonify({"error": result}), 500
+
+
+@app.route("/api/save_communication", methods=["POST"])
+def api_save_communication():
+    """コミュニケーション記録をNotionに保存"""
+    data = request.get_json()
+    client_id = data.get("client_id", "")
+    title = data.get("title", "").strip()
+    date = data.get("date", "")
+    route = data.get("route", "その他")
+    direction = data.get("direction", "受信（相手から）")
+    status = data.get("status", "対応済み")
+    content = data.get("content", "").strip()
+    memo = data.get("memo", "").strip()
+
+    if not client_id or not title or not date:
+        return jsonify({"error": "クライアントID・タイトル・日付は必須です"}), 400
+
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        return jsonify({"error": "日付の形式が正しくありません"}), 400
+
+    success, result = save_communication(client_id, title, date, route, direction, status, content, memo)
+    if success:
+        return jsonify({"success": True, "url": result})
+    else:
+        return jsonify({"error": result}), 500
+
+
+@app.route("/api/debug_comms/<client_id>")
+def api_debug_comms(client_id):
+    """デバッグ用：コミュニケーションDBの生データ確認"""
+    return jsonify(debug_communications_raw(client_id))
+
+
+@app.route("/api/debug_client/<client_id>")
+def api_debug_client(client_id):
+    """デバッグ用：クライアントページのプロパティ型確認"""
+    import requests as req
+    from notion_handler import _headers
+    from config import NOTION_VERSION
+    resp = req.get(f"https://api.notion.com/v1/pages/{client_id}", headers=_headers())
+    if resp.status_code != 200:
+        return jsonify({"error": resp.status_code, "body": resp.text})
+    props = resp.json().get("properties", {})
+    return jsonify({k: {"type": v.get("type"), "value": v} for k, v in props.items()})
 
 
 @app.route("/api/add_client", methods=["POST"])

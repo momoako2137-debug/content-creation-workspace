@@ -11,6 +11,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 # Notion設定
 NOTION_API_KEY = os.getenv("NOTION_API_KEY", "")
 NOTION_CLIENT_DB_ID = os.getenv("NOTION_CLIENT_DB_ID", "4d430e2fc8ad41a29362cdf1994d507a")
+NOTION_COMM_DB_ID = os.getenv("NOTION_COMM_DB_ID", "63beeef39d0745be8d0a89b2bed280a2")
 NOTION_VERSION = "2022-06-28"
 
 # Gemini設定

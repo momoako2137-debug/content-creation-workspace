@@ -7,7 +7,12 @@
 </div>
 
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-bold text-rose-800">{{ client.name }} のカルテ</h1>
+  <div>
+    {% if client.client_number %}
+    <span class="text-sm text-stone-400 font-mono">{{ client.client_number }}</span>
+    {% endif %}
+    <h1 class="text-2xl font-bold text-rose-800">{{ client.name }} のカルテ</h1>
+  </div>
 </div>
 
 <!-- セクション1: 基本情報 -->
@@ -59,57 +64,215 @@
   {% endif %}
 </div>
 
-<!-- セッション記録一覧 -->
+<!-- タイムライン（セッション＋コミュニケーション 日付順） -->
 <div class="flex items-center justify-between mb-4">
-  <h2 class="text-base font-bold text-rose-700">📝 セッション記録</h2>
-  {% if session_db_id %}
-  <a href="/client/{{ client.id }}/new"
-    class="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow">
-    ＋ 新規セッション
-  </a>
-  {% endif %}
+  <h2 class="text-base font-bold text-rose-700">🗓 タイムライン</h2>
+  <div class="flex gap-2">
+    {% if session_db_id %}
+    <a href="/client/{{ client.id }}/new"
+      class="bg-pink-400 hover:bg-pink-500 text-white px-3 py-2 rounded-xl text-sm font-medium transition shadow">
+      ＋ セッション
+    </a>
+    {% endif %}
+    <button onclick="openCommModal()"
+      class="bg-blue-400 hover:bg-blue-500 text-white px-3 py-2 rounded-xl text-sm font-medium transition shadow">
+      ＋ やりとり
+    </button>
+  </div>
 </div>
 
-{% if sessions %}
+{% if timeline %}
 <div class="space-y-3">
-  {% for session in sessions %}
+  {% for item in timeline %}
+  {% if item.type == 'session' %}
+  {% set s = item.data %}
   <div class="bg-white border border-stone-200 rounded-xl p-4 shadow-sm hover:border-pink-300 transition">
     <div class="flex items-start justify-between gap-3">
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="font-medium text-rose-800">{{ session.name }}</span>
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full flex-shrink-0">📝 セッション</span>
+          <span class="font-medium text-rose-800 text-sm">{{ s.name }}</span>
           <span class="text-xs
-            {% if session.status == '記録済み' %}bg-green-100 text-green-700
-            {% elif session.status == '記録中' %}bg-yellow-100 text-yellow-700
+            {% if s.status == '記録済み' %}bg-green-100 text-green-700
+            {% elif s.status == '記録中' %}bg-yellow-100 text-yellow-700
             {% else %}bg-stone-100 text-stone-500{% endif %}
-            px-2 py-0.5 rounded-full flex-shrink-0">{{ session.status or '未記録' }}</span>
+            px-2 py-0.5 rounded-full flex-shrink-0">{{ s.status or '未記録' }}</span>
         </div>
-        {% if session.try_next %}
-        <p class="text-xs text-stone-500 line-clamp-2 mt-1">✅ <span class="text-stone-400">やること：</span>{{ session.try_next }}</p>
+        {% if s.try_next %}
+        <p class="text-xs text-stone-500 line-clamp-2 mt-1">✅ <span class="text-stone-400">やること：</span>{{ s.try_next }}</p>
         {% endif %}
-        {% if session.next_action %}
-        <p class="text-xs text-stone-500 line-clamp-2 mt-1">🔜 <span class="text-stone-400">次回：</span>{{ session.next_action }}</p>
+        {% if s.next_action %}
+        <p class="text-xs text-stone-500 line-clamp-2 mt-1">🔜 <span class="text-stone-400">次回：</span>{{ s.next_action }}</p>
         {% endif %}
       </div>
       <div class="text-right text-xs text-stone-400 flex-shrink-0">
-        {% if session.next_date %}
-        <div class="text-pink-500">次回: {{ session.next_date }}</div>
+        <div>{{ s.date or '' }}</div>
+        {% if s.next_date %}
+        <div class="text-pink-500 mt-1">次回: {{ s.next_date }}</div>
         {% endif %}
       </div>
     </div>
   </div>
+  {% else %}
+  {% set c = item.data %}
+  <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 shadow-sm hover:border-blue-300 transition">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full flex-shrink-0">💬 {{ c.route or 'やりとり' }}</span>
+          <span class="text-xs
+            {% if c.direction == '受信（相手から）' %}bg-yellow-100 text-yellow-700
+            {% else %}bg-purple-100 text-purple-700{% endif %}
+            px-2 py-0.5 rounded-full flex-shrink-0">{{ c.direction or '' }}</span>
+          <span class="text-xs
+            {% if c.status == '対応済み' %}bg-green-100 text-green-700
+            {% elif c.status == '要フォロー' %}bg-red-100 text-red-700
+            {% else %}bg-stone-100 text-stone-500{% endif %}
+            px-2 py-0.5 rounded-full flex-shrink-0">{{ c.status or '未対応' }}</span>
+        </div>
+        {% if c.title %}
+        <p class="text-sm font-medium text-stone-700 mt-1">{{ c.title }}</p>
+        {% endif %}
+        {% if c.content %}
+        <p class="text-xs text-stone-600 line-clamp-3 mt-1">{{ c.content }}</p>
+        {% endif %}
+        {% if c.memo %}
+        <p class="text-xs text-pink-500 mt-1">📌 {{ c.memo }}</p>
+        {% endif %}
+      </div>
+      <div class="text-right text-xs text-stone-400 flex-shrink-0">
+        {{ c.date or '' }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
   {% endfor %}
 </div>
 {% else %}
 <div class="text-center py-10 text-stone-400 bg-white rounded-2xl border border-stone-100">
   <div class="text-3xl mb-2">📂</div>
-  <p class="text-sm">まだセッション記録がありません</p>
-  {% if session_db_id %}
-  <a href="/client/{{ client.id }}/new"
-    class="mt-3 inline-block text-pink-500 text-sm hover:text-pink-700">
-    最初のセッションを記録する →
-  </a>
-  {% endif %}
+  <p class="text-sm">まだ記録がありません</p>
 </div>
 {% endif %}
+
+<!-- コミュニケーション記録追加モーダル -->
+<div id="commModal" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+    <h2 class="text-xl font-bold text-rose-800 mb-5">💬 コミュニケーション記録を追加</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">タイトル <span class="text-red-400">*</span></label>
+        <input type="text" id="comm-title" placeholder="例：Facebookメッセージ（料金確認）"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">日付 <span class="text-red-400">*</span></label>
+        <input type="date" id="comm-date"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-stone-600 mb-1">経路</label>
+          <select id="comm-route"
+            class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+            <option>公式LINE</option>
+            <option>Facebookメッセージ</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-stone-600 mb-1">方向</label>
+          <select id="comm-direction"
+            class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+            <option>受信（相手から）</option>
+            <option>送信（モモさんから）</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">対応状況</label>
+        <select id="comm-status"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+          <option>対応済み</option>
+          <option>要フォロー</option>
+          <option>確認中</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">内容・要約</label>
+        <textarea id="comm-content" rows="4" placeholder="メッセージの内容や要約を入力"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400 resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-stone-600 mb-1">メモ</label>
+        <input type="text" id="comm-memo" placeholder="対応メモなど"
+          class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeCommModal()"
+        class="flex-1 border border-stone-200 text-stone-500 py-2 rounded-xl text-sm hover:bg-stone-50 transition">
+        キャンセル
+      </button>
+      <button onclick="submitComm()"
+        class="flex-1 bg-blue-400 hover:bg-blue-500 text-white py-2 rounded-xl text-sm font-medium transition">
+        保存する
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const CLIENT_ID = "{{ client.id }}";
+
+function openCommModal() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('comm-date').value = today;
+  document.getElementById('commModal').classList.remove('hidden');
+}
+function closeCommModal() {
+  document.getElementById('commModal').classList.add('hidden');
+}
+
+async function submitComm() {
+  const title = document.getElementById('comm-title').value.trim();
+  const date = document.getElementById('comm-date').value;
+  if (!title || !date) {
+    showToast('タイトルと日付は必須です', 'error');
+    return;
+  }
+
+  const data = {
+    client_id: CLIENT_ID,
+    title,
+    date,
+    route: document.getElementById('comm-route').value,
+    direction: document.getElementById('comm-direction').value,
+    status: document.getElementById('comm-status').value,
+    content: document.getElementById('comm-content').value,
+    memo: document.getElementById('comm-memo').value,
+  };
+
+  try {
+    const res = await fetch('/api/save_communication', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (result.success) {
+      showToast('保存しました');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showToast(result.error || '保存に失敗しました', 'error');
+    }
+  } catch (e) {
+    showToast('エラーが発生しました', 'error');
+  }
+}
+</script>
 {% endblock %}
