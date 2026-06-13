@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["consultation_app/app.py"],
       "port": 5000
+    },
+    {
+      "name": "stress-check-app",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "02_講座/self_care/stress_check_app", "-p", "3333", "--no-clipboard"],
+      "port": 3333
     }
   ]
 }
