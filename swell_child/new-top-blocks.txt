@@ -1,0 +1,161 @@
+<!-- wp:group {"className":"kk-fv","layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-fv"><!-- wp:columns {"align":"wide","className":"kk-fv__inner"} -->
+<div class="wp-block-columns alignwide kk-fv__inner"><!-- wp:column {"className":"kk-fv__text"} -->
+<div class="wp-block-column kk-fv__text"><!-- wp:heading {"level":1,"className":"kk-fv__title"} -->
+<h1 class="wp-block-heading kk-fv__title">思春期の子育てが<br><em>苦しい</em>お母さんへ</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"kk-fv__subtitle"} -->
+<p class="kk-fv__subtitle">「どうしてうちの子だけ…」<br>その悩み、ひとりで抱えないでください。<br>私は、あなたの味方です。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"className":"kk-fv__note"} -->
+<p class="kk-fv__note">＼1分で登録完了／</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"border":{"radius":"50px"},"color":{"background":"#E07B72","text":"#ffffff"},"spacing":{"padding":{"top":"16px","bottom":"16px","left":"40px","right":"40px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button has-text-color has-background" href="【メルマガ登録URL】" style="border-radius:50px;background-color:#E07B72;color:#ffffff;padding-top:16px;padding-bottom:16px;padding-left:40px;padding-right:40px">✉ 今すぐ無料動画を受け取る ›</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"className":"kk-fv__image"} -->
+<div class="wp-block-column kk-fv__image"><!-- wp:image {"sizeSlug":"large","className":"kk-fv__photo"} -->
+<figure class="wp-block-image size-large kk-fv__photo"><img src="【プロフィール写真URL】" alt="思春期の子育て専門家 桃木亜子"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"kk-trust","style":{"color":{"background":"#ffffff"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-trust has-background" style="background-color:#ffffff"><!-- wp:group {"className":"kk-trust__inner","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center","alignItems":"center"}} -->
+<div class="wp-block-group kk-trust__inner"><!-- wp:group {"className":"kk-trust__body","layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-trust__body"><!-- wp:heading {"level":2,"textAlign":"center","className":"kk-trust__title"} -->
+<h2 class="wp-block-heading has-text-align-center kk-trust__title">24年間、子育てに追い詰められた<br>お母さんを支えてきた。<br><em>だから確信がある。</em></h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"align":"center","className":"kk-trust__text"} -->
+<p class="has-text-align-center kk-trust__text">お母さんが変われば、子どもは必ず変わります。<br>そのことを、私は何よりも確信しています。<br>あなたの子育てが、笑顔に変わる未来を一緒に作りましょう。</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"kk-testimonials","layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-testimonials"><!-- wp:heading {"level":2,"textAlign":"center","className":"kk-section-title"} -->
+<h2 class="wp-block-heading has-text-align-center kk-section-title">お客様の声</h2>
+<!-- /wp:heading -->
+
+<!-- wp:columns {"align":"wide","className":"kk-testimonials__grid"} -->
+<div class="wp-block-columns alignwide kk-testimonials__grid"><!-- wp:column {"className":"kk-card"} -->
+<div class="wp-block-column kk-card"><!-- wp:heading {"level":3,"className":"kk-card__headline"} -->
+<h3 class="wp-block-heading kk-card__headline">子どもとの関係が驚くほど楽になりました</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"kk-card__body"} -->
+<p class="kk-card__body">思春期の子どもとの毎日が辛くて、涙が止まらない日もありました。先生の言葉をきっかけに、子どもとの関係が驚くほど変わりました。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"right","className":"kk-card__name"} -->
+<p class="has-text-align-right kk-card__name">中学2年生のママ（42歳）</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"className":"kk-card"} -->
+<div class="wp-block-column kk-card"><!-- wp:heading {"level":3,"className":"kk-card__headline"} -->
+<h3 class="wp-block-heading kk-card__headline">自分を責める気持ちがなくなりました</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"kk-card__body"} -->
+<p class="kk-card__body">「私の育て方が悪いんだ…」と自分を責めてばかりでした。今では、子どもを信じて見守れるようになりました。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"right","className":"kk-card__name"} -->
+<p class="has-text-align-right kk-card__name">高校1年生のママ（45歳）</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"className":"kk-card"} -->
+<div class="wp-block-column kk-card"><!-- wp:heading {"level":3,"className":"kk-card__headline"} -->
+<h3 class="wp-block-heading kk-card__headline">家庭の雰囲気が明るくなりました</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"kk-card__body"} -->
+<p class="kk-card__body">ピリピリした空気がなくなり、笑顔で会話できる時間が増えました。本当に感謝しています。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"right","className":"kk-card__name"} -->
+<p class="has-text-align-right kk-card__name">中学3年生のママ（48歳）</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:paragraph {"align":"center","className":"kk-disclaimer"} -->
+<p class="has-text-align-center kk-disclaimer">※個人の感想であり、効果を保証するものではありません。</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"kk-profile","style":{"color":{"background":"#ffffff"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-profile has-background" style="background-color:#ffffff"><!-- wp:columns {"align":"wide","className":"kk-profile__inner"} -->
+<div class="wp-block-columns alignwide kk-profile__inner"><!-- wp:column {"width":"30%","className":"kk-profile__image"} -->
+<div class="wp-block-column kk-profile__image" style="flex-basis:30%"><!-- wp:image {"sizeSlug":"large","className":"kk-profile__photo","style":{"border":{"radius":"50%"}}} -->
+<figure class="wp-block-image size-large kk-profile__photo"><img src="【代表写真URL】" alt="思春期の子育て専門家 桃木亜子" style="border-radius:50%"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"70%","className":"kk-profile__text"} -->
+<div class="wp-block-column kk-profile__text" style="flex-basis:70%"><!-- wp:paragraph {"className":"kk-profile__greeting"} -->
+<p class="kk-profile__greeting">はじめまして、</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"className":"kk-profile__title"} -->
+<h2 class="wp-block-heading kk-profile__title">思春期の子育て専門家<br><strong>桃木亜子</strong>です</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"kk-profile__body"} -->
+<p class="kk-profile__body">私自身、子育てに悩み、苦しみ、どうしていいかわからない時期がありました。その経験から、同じように苦しむお母さんの力になりたいと思い、24年間にわたり、思春期の子育て支援を続けています。どんな辛い状況でも、必ず変われます。あなたの未来を、心を込めてサポートします。</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"border":{"radius":"50px","color":"#B89B8A","width":"1px"},"color":{"background":"transparent","text":"#3D2B1F"},"spacing":{"padding":{"top":"12px","bottom":"12px","left":"32px","right":"32px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button has-text-color has-background" href="/profile/" style="border-radius:50px;border-color:#B89B8A;border-width:1px;background-color:transparent;color:#3D2B1F;padding-top:12px;padding-bottom:12px;padding-left:32px;padding-right:32px">想いを読む →</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"kk-cta","style":{"color":{"background":"#FAF0EE"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group kk-cta has-background" style="background-color:#FAF0EE"><!-- wp:columns {"align":"wide","className":"kk-cta__inner"} -->
+<div class="wp-block-columns alignwide kk-cta__inner"><!-- wp:column {"width":"55%","className":"kk-cta__text"} -->
+<div class="wp-block-column kk-cta__text" style="flex-basis:55%"><!-- wp:paragraph {"className":"kk-cta__label"} -->
+<p class="kk-cta__label">── 期間限定 ──</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"className":"kk-cta__title"} -->
+<h2 class="wp-block-heading kk-cta__title">子どもへの対応に悩むお母さんへ<br><em>無料動画プレゼント</em></h2>
+<!-- /wp:heading -->
+
+<!-- wp:list {"className":"kk-cta__list"} -->
+<ul class="wp-block-list kk-cta__list"><li>子どもとの関わり方のコツ</li><li>イライラが減る考え方</li><li>親子関係が変わる魔法の言葉</li></ul>
+<!-- /wp:list -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"border":{"radius":"50px"},"color":{"background":"#E07B72","text":"#ffffff"},"spacing":{"padding":{"top":"18px","bottom":"18px","left":"48px","right":"48px"}}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button has-text-color has-background" href="【メルマガ登録URL】" style="border-radius:50px;background-color:#E07B72;color:#ffffff;padding-top:18px;padding-bottom:18px;padding-left:48px;padding-right:48px">✉ 今すぐ無料動画を受け取る ›</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:paragraph {"align":"center","className":"kk-cta__note"} -->
+<p class="has-text-align-center kk-cta__note">登録は1分で完了します</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"40%","className":"kk-cta__image"} -->
+<div class="wp-block-column kk-cta__image" style="flex-basis:40%"><!-- wp:image {"sizeSlug":"large","className":"kk-cta__photo"} -->
+<figure class="wp-block-image size-large kk-cta__photo"><img src="【CTAイメージ写真URL】" alt=""/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group -->

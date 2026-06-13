@@ -1,0 +1,498 @@
+/* ============================================================
+   karakoko.com 新トップページ カスタムCSS v3
+   ============================================================ */
+
+:root {
+  --kk-cream:       #FAF7F4;
+  --kk-cream-dark:  #F2EBE4;
+  --kk-pink:        #E07B72;
+  --kk-pink-light:  #FDF0EE;
+  --kk-pink-bg:     #FAF0EE;
+  --kk-brown:       #3D2B1F;
+  --kk-brown-mid:   #7A6050;
+  --kk-brown-light: #B89B8A;
+  --kk-white:       #FFFFFF;
+  --kk-border:      #EAD8D0;
+  --kk-font:        'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  --kk-max-width:   1080px;
+}
+
+/* ---- ベースリセット ---------------------------------------- */
+.kk-top *, .kk-top *::before, .kk-top *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.kk-top {
+  background-color: var(--kk-cream);
+  color: var(--kk-brown);
+  font-family: var(--kk-font);
+  font-weight: 300;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+.kk-top img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.kk-top h1, .kk-top h2, .kk-top h3 {
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* ---- ボタン ----------------------------------------------- */
+.kk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-family: var(--kk-font);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.kk-btn--primary {
+  background-color: var(--kk-pink);
+  color: var(--kk-white);
+  border: none;
+  box-shadow: 0 4px 20px rgba(224, 123, 114, 0.35);
+}
+.kk-btn--primary:hover {
+  background-color: #D46E65;
+  box-shadow: 0 6px 24px rgba(224, 123, 114, 0.45);
+  transform: translateY(-2px);
+  color: var(--kk-white);
+}
+.kk-btn--outline {
+  background-color: transparent;
+  color: var(--kk-brown);
+  border: 1px solid var(--kk-brown-light);
+  padding: 12px 32px;
+}
+.kk-btn--outline:hover {
+  background-color: var(--kk-cream-dark);
+  color: var(--kk-brown);
+}
+.kk-btn--large {
+  font-size: 1.1rem;
+  padding: 18px 48px;
+}
+
+
+/* ============================================================
+   ファーストビュー
+   ============================================================ */
+.kk-fv {
+  background-color: var(--kk-cream);
+  padding: 80px 40px 60px;
+  overflow: hidden;
+}
+.kk-fv__inner {
+  max-width: var(--kk-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  min-height: 520px;
+}
+.kk-fv__text {
+  flex: 1 1 52%;
+  min-width: 0;
+}
+.kk-fv__title {
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  color: var(--kk-brown);
+  margin-bottom: 28px;
+}
+.kk-fv__title em {
+  font-style: normal;
+  color: var(--kk-pink);
+}
+.kk-fv__subtitle {
+  font-size: 1.05rem;
+  color: var(--kk-brown-mid);
+  line-height: 2.1;
+  margin-bottom: 32px;
+}
+.kk-fv__note {
+  font-size: 0.82rem;
+  color: var(--kk-brown-light);
+  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+}
+.kk-fv__image {
+  flex: 1 1 44%;
+  min-width: 0;
+}
+.kk-fv__photo {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  margin: 0 auto;
+  object-fit: cover;
+  /* 画像未設定時のフォールバック */
+  min-height: 400px;
+  background-color: var(--kk-cream-dark);
+}
+
+
+/* ============================================================
+   信頼セクション
+   ============================================================ */
+.kk-trust {
+  background-color: var(--kk-white);
+  padding: 96px 40px;
+  text-align: center;
+}
+.kk-trust__inner {
+  max-width: var(--kk-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+.kk-trust__deco {
+  flex: 0 0 72px;
+  opacity: 0.45;
+}
+.kk-trust__deco img {
+  width: 100%;
+}
+.kk-trust__body {
+  flex: 1 1 auto;
+  max-width: 620px;
+}
+.kk-trust__title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 300;
+  line-height: 2.0;
+  letter-spacing: 0.08em;
+  color: var(--kk-brown);
+  margin-bottom: 28px;
+}
+.kk-trust__title em {
+  font-style: normal;
+  color: var(--kk-pink);
+  font-weight: 400;
+  font-size: 1.1em;
+}
+.kk-trust__text {
+  font-size: 1rem;
+  color: var(--kk-brown-mid);
+  line-height: 2.4;
+}
+
+
+/* ============================================================
+   お客様の声
+   ============================================================ */
+.kk-testimonials {
+  background-color: var(--kk-cream);
+  padding: 96px 40px;
+}
+.kk-testimonials__inner {
+  max-width: var(--kk-max-width);
+  margin: 0 auto;
+}
+.kk-section-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 48px;
+  color: var(--kk-brown);
+}
+.kk-testimonials__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.kk-card {
+  background: var(--kk-white);
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 16px rgba(74, 55, 40, 0.07);
+  transition: box-shadow 0.2s ease;
+}
+.kk-card:hover {
+  box-shadow: 0 4px 24px rgba(74, 55, 40, 0.12);
+}
+.kk-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+/* アイコン：画像未設定時はシルエット表示 */
+.kk-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--kk-pink-light);
+  /* 画像が壊れている場合のフォールバック */
+  color: transparent;
+  font-size: 0;
+}
+.kk-card__icon::after {
+  content: '';
+  display: block;
+}
+.kk-card__headline {
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--kk-brown);
+  line-height: 1.7;
+  margin: 0;
+}
+.kk-card__body {
+  font-size: 0.88rem;
+  color: var(--kk-brown-mid);
+  line-height: 2.0;
+  flex: 1;
+}
+.kk-card__name {
+  font-size: 0.78rem;
+  color: var(--kk-brown-light);
+  text-align: right;
+}
+.kk-disclaimer {
+  font-size: 0.75rem;
+  color: var(--kk-brown-light);
+  text-align: center;
+  margin-top: 16px;
+}
+
+
+/* ============================================================
+   代表紹介
+   ============================================================ */
+.kk-profile {
+  background-color: var(--kk-white);
+  padding: 96px 40px;
+}
+.kk-profile__inner {
+  max-width: var(--kk-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 72px;
+  position: relative;
+}
+.kk-profile__image {
+  flex-shrink: 0;
+}
+.kk-profile__photo {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--kk-border);
+  /* 画像未設定時のフォールバック */
+  background-color: var(--kk-cream-dark);
+}
+.kk-profile__text {
+  flex: 1 1 auto;
+}
+.kk-profile__greeting {
+  font-size: 0.9rem;
+  color: var(--kk-brown-mid);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+.kk-profile__title {
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--kk-brown);
+  margin-bottom: 20px;
+}
+.kk-profile__title strong {
+  font-weight: 600;
+}
+.kk-profile__body {
+  font-size: 0.95rem;
+  color: var(--kk-brown-mid);
+  line-height: 2.2;
+  margin-bottom: 28px;
+}
+.kk-profile__deco {
+  flex: 0 0 80px;
+  opacity: 0.35;
+  align-self: flex-end;
+  padding-bottom: 24px;
+}
+
+
+/* ============================================================
+   メルマガCTA
+   ============================================================ */
+.kk-cta {
+  background-color: var(--kk-pink-bg);
+  padding: 80px 40px;
+}
+.kk-cta__inner {
+  max-width: var(--kk-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+}
+.kk-cta__text {
+  flex: 1 1 55%;
+}
+.kk-cta__label {
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
+  color: var(--kk-brown-mid);
+  margin-bottom: 16px;
+}
+.kk-cta__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--kk-brown);
+  margin-bottom: 24px;
+}
+.kk-cta__title em {
+  font-style: normal;
+  color: var(--kk-pink);
+  font-weight: 400;
+}
+.kk-cta__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kk-cta__list li {
+  font-size: 0.95rem;
+  color: var(--kk-brown-mid);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kk-cta__list li::before {
+  content: '✓';
+  color: var(--kk-pink);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+/* ✓ が二重にならないよう元の文字を非表示 */
+.kk-cta__list li {
+  text-indent: 0;
+}
+.kk-cta__note {
+  font-size: 0.8rem;
+  color: var(--kk-brown-light);
+  margin-top: 14px;
+  text-align: center;
+}
+.kk-cta__image {
+  flex: 1 1 40%;
+}
+.kk-cta__photo {
+  border-radius: 12px;
+  width: 100%;
+  object-fit: cover;
+  /* 画像未設定時のフォールバック */
+  min-height: 280px;
+  background-color: var(--kk-cream-dark);
+}
+
+
+/* ============================================================
+   スマホ対応 (767px 以下)
+   ============================================================ */
+@media (max-width: 767px) {
+
+  .kk-fv {
+    padding: 48px 20px 40px;
+  }
+  .kk-fv__inner {
+    flex-direction: column-reverse;
+    gap: 28px;
+    min-height: auto;
+  }
+  .kk-fv__photo {
+    max-width: 100%;
+    min-height: 260px;
+  }
+  .kk-fv__title {
+    font-size: 1.9rem;
+  }
+
+  .kk-trust {
+    padding: 64px 20px;
+  }
+  .kk-trust__inner {
+    flex-direction: column;
+    gap: 0;
+  }
+  .kk-trust__deco {
+    display: none;
+  }
+
+  .kk-testimonials {
+    padding: 64px 20px;
+  }
+  .kk-testimonials__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .kk-profile {
+    padding: 64px 20px;
+  }
+  .kk-profile__inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .kk-profile__photo {
+    width: 200px;
+    height: 200px;
+  }
+  .kk-profile__deco {
+    display: none;
+  }
+
+  .kk-cta {
+    padding: 56px 20px;
+  }
+  .kk-cta__inner {
+    flex-direction: column;
+    gap: 28px;
+    text-align: center;
+  }
+  .kk-cta__list li {
+    justify-content: center;
+  }
+  .kk-cta__image {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  .kk-btn--large {
+    width: 100%;
+    font-size: 1rem;
+    padding: 16px 24px;
+  }
+}
